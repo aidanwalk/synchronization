@@ -170,7 +170,7 @@ def find_files_in_dir(
         List of filenames that match the specified file type.
     """
     
-    files = os.listdir(directory)
+    files = sorted(os.listdir(directory))
     matched_files = [f for f in files if f.endswith(file_type)]
     
     if obs_start is not None and obs_end is not None:
