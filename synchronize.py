@@ -82,9 +82,6 @@ SYNCHRONIZING PSF DATA WITH PHOTONIC LANTERN
         # file_type=PL_FILE_TYPE
     )
 
-    print(PL_image_files[0:10])
-    print(FP_image_files[0:10])
-    assert False
     # For testing, when the fits files do not exist but the telemetry files do:
     # You can run everything up to the data interpolation step.
     # FP_image_files = data_handling.find_object_files(
