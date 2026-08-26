@@ -134,7 +134,7 @@ def find_object_files(
             sys.exit('File type not supported. Cannot extract object information.')
             
         # If this is the object we are looking for
-        if hdr['OBJECT'] == object_name:
+        if hdr['OBJECT'].upper() == object_name.upper():
             # include it in the returned data
             object_files.append(filename)
             N_frames += hdr['NAXIS3']
