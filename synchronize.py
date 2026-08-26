@@ -1,4 +1,11 @@
 """
+Usage:
+    python synchronize.py <config_file>
+
+Where <config_file> is the path to the configuration file containing telemetry 
+parameters. See ./config_files/example_config.ini for an example.
+
+
 The goal of this code is to input psf telemetry files, PL telemetry files, 
 and compute the overlapping PSF frames for every PL frame. 
 
@@ -53,7 +60,6 @@ PL_IMAGE_DIR = config['PL']['image_dir']
 PL_FILE_TYPE = '.fits'
 FRAME_OFFSET = float(config['FP']['time_offset'])
 OUTPUT_DIR = config['FP']['synced_dir']
-PLOT_DIR = config['Plotting']['plot_dir']
 OVERLAP_THRESH = float(config['FP']['overlap_threshold'])
 
 
@@ -66,6 +72,9 @@ SYNCHRONIZING PSF DATA WITH PHOTONIC LANTERN
 ============================================
 """
     print('\n\n\n'+running_ascii+'\n\n\n')
+    
+    if OBJECT == 'None': OBJECT = None
+    # if OBJECT is None: PL_FILE_TYPE = '.txt'
     
     # Find the relevant FP and PL image files. 
     # We will extract the data cube file names from these files. 
