@@ -61,7 +61,7 @@ PL_FILE_TYPE = '.fits'
 FRAME_OFFSET = float(config['FP']['time_offset'])
 OUTPUT_DIR = config['FP']['synced_dir']
 OVERLAP_THRESH = float(config['FP']['overlap_threshold'])
-
+FMT_PREPROC = config.get('FP', 'preproc_fmt', fallback=False)
 
 
 if __name__ == '__main__':
@@ -172,6 +172,16 @@ SYNCHRONIZING PSF DATA WITH PHOTONIC LANTERN
         if synced_cube is None:
             print(f"No overlapping data found for {datacube_file}, skipping.")
             continue
+        
+        if FMT_PREPROC:
+            ref_hdr = fits.getheader(os.path.join(PL_IMAGE_DIR, PL_image_file))
+            ut_str = ref_hdr['UT-STR']
+            object_name = ref_hdr['OBJECT'].replace(' ', '')
+            # replace 00:00:00.00 with 00h00m00.00s
+            ut_str = ut_str.replace(':', 'h', 1).replace(':', 'm', 1) + 's'
+            date = ref_hdr['DATE-OBS']
+            inst_name = PL_image_file.split('_')[0]
+            datacube_file = f"synced_fastcam_to_{inst_name}_{date}T{ut_str}_{object_name}_P.fits"
         
         fits.writeto(
             os.path.join(FP_SYNC_DIR, 'synced_fastcam_to_' + datacube_file + '.fits'),
