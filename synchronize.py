@@ -181,7 +181,7 @@ SYNCHRONIZING PSF DATA WITH PHOTONIC LANTERN
             ut_str = ut_str.replace(':', 'h', 1).replace(':', 'm', 1) + 's'
             date = ref_hdr['DATE-OBS']
             inst_name = PL_image_file.split('_')[0]
-            datacube_file = f"synced_fastcam_to_{inst_name}_{date}T{ut_str}_{object_name}_P.fits"
+            datacube_file = f"{inst_name}_{date}T{ut_str}_{object_name}_P"
         
         fits.writeto(
             os.path.join(FP_SYNC_DIR, 'synced_fastcam_to_' + datacube_file + '.fits'),
