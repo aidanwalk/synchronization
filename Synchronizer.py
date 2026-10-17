@@ -217,7 +217,7 @@ def compute_fractional_overlaps(
     # Compute the optimal number of other frames overlapping with the reference
     if reference_exposure_time is None or other_exposure_time is None:
         print("\n\n!!! WARNING !!! Exposure times not provided. Attempting to infer exposure times from telemetry data.\nThis is only safe if running at full duty cycle.")
-        input("Press Enter to continue or Ctrl+C to abort...")
+        # input("Press Enter to continue or Ctrl+C to abort...")
         # Try to infer exposure times from the telemetry data
         reference_exposure_time = np.median([
             frame[2] - frame[1] for frame in ref_data
@@ -295,7 +295,7 @@ def compute_fractional_overlaps(
     
     extrapolated_frames = np.sum( np.array(overlap_percentages) < overlap_threshold )
     if extrapolated_frames > 0:
-        print(f'!!! WARNING !!! Datacube {reference_telemetry_file} has {extrapolated_frames} extrapolated frames (less than {overlap_threshold*100:0.0f}% overlap) that are rejected.')
+        print(f'\nDatacube {reference_telemetry_file} has {extrapolated_frames} extrapolated frames (less than {overlap_threshold*100:0.0f}% overlap) that are rejected.')
     
     
     overlaps = Overlaps(dict(overlaps), len(ref_data), frame_offset)
