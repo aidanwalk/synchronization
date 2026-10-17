@@ -3,4 +3,5 @@ __pycache__
 *.png
 *.ini
 !example_config.ini
+!altair_20260827.ini
 .vscode
