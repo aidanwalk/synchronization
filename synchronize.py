@@ -121,7 +121,6 @@ SYNCHRONIZING PSF DATA WITH PHOTONIC LANTERN
     
     
     
-    
     # -------------------------------------------------------------------------
     # CREATE PSF SYNCHRONIZATION INSTRUCTION FILES
     # -------------------------------------------------------------------------
@@ -129,9 +128,15 @@ SYNCHRONIZING PSF DATA WITH PHOTONIC LANTERN
         PL_telemetry_files,
         FP_telemetry_files
     ):
+        PL_exp_time = fits.getheader(os.path.join(PL_IMAGE_DIR, ref_file.replace('.txt', PL_FILE_TYPE)))['EXPTIME']
+        FP_exp_time = fits.getheader(os.path.join(FP_IMAGE_DIR, overlapping_datacubes[0].replace('.txt', '.fits')))['EXPTIME']
+        # print("PL exposure time: ", PL_exp_time)
+        # print("FP exposure time: ", FP_exp_time)
         overlaps = Synchronizer.compute_fractional_overlaps(
             ref_file,
             overlapping_datacubes,
+            reference_exposure_time=PL_exp_time,
+            other_exposure_time=FP_exp_time,
             ref_dir=PL_TEL_DIR,
             other_dir=FP_TEL_DIR,
             frame_offset=FRAME_OFFSET, 

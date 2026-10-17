@@ -170,6 +170,11 @@ def compute_fractional_overlaps(
     Computes the overlap percentage of individual frames in other_telemetry_files
     to the frames in datacube reference_telemetry_file. This function is best used
     in conjunction with the iter_overlapping_datacubes function.
+
+    Warning: If the exposure times are not provided, we infer exposure times from the 
+    telemetry data. This is only safe in the occasion where camera_expt >= camera_readout. 
+    As such, frame start times are estimated by frame_start = previous_frame_end. When 
+    exposusure times are provided, frame_start = frame_end - exposure_time.
     
     Parameters:
     -----------
@@ -177,6 +182,12 @@ def compute_fractional_overlaps(
         Path to the reference datacube telemetry file
     overlapping_tel_files : list[str]
         Files possibly overlapping with the reference telemetry file datacube.
+    reference_exposure_time : float | None
+        Exposure time of the reference datacube in seconds. If None, the 
+        exposure time will be inferred from the telemetry data.
+    other_exposure_time : float | None
+        Exposure time of the overlapping datacubes in seconds. If None, the 
+        exposure time will be inferred from the telemetry data.
     ref_dir : str
         Directory containing the reference datacube telemetry file.
     other_dir : str
@@ -195,10 +206,18 @@ def compute_fractional_overlaps(
     # Open the reference telemetry data [frame_index, frame_start, frame_end]
     PL_tel_file = os.path.join(ref_dir, reference_telemetry_file)
     ref_data = data_handling.read_telemetry(PL_tel_file)
-    
+
+
+    if reference_exposure_time is not None:
+        # estimate frame start times based on the exposure time and frame index, instead of 
+        # the approximation frame_start = previous_frame_end
+        ref_data = [[idx, t_end-reference_exposure_time, t_end] for (idx, t_start, t_end) in ref_data]
+
     
     # Compute the optimal number of other frames overlapping with the reference
     if reference_exposure_time is None or other_exposure_time is None:
+        print("\n\n!!! WARNING !!! Exposure times not provided. Attempting to infer exposure times from telemetry data.\nThis is only safe if running at full duty cycle.")
+        input("Press Enter to continue or Ctrl+C to abort...")
         # Try to infer exposure times from the telemetry data
         reference_exposure_time = np.median([
             frame[2] - frame[1] for frame in ref_data
@@ -219,6 +238,11 @@ def compute_fractional_overlaps(
     fp_data = []
     for file in other_telemetry_files:
         data = data_handling.read_telemetry(os.path.join(other_dir, file))
+
+        if other_exposure_time is not None:
+            # estimate frame start times based on the exposure time and frame end
+            data = [[idx, t_end-other_exposure_time, t_end] for (idx, t_start, t_end) in data]
+        
         data = [ [file] + frame for frame in data ]
         fp_data.extend(data)
     
